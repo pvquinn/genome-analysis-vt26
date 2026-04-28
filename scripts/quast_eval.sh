@@ -7,7 +7,7 @@
 # Load modules
 module load QUAST/5.3.0-gfbf-2024a
 
-# Copy contigs the compute node temp storage
+# Copy contigs to the compute node temp storage
 cp /proj/uppmax2026-1-61/nobackup/pilla/assembly/canu_output/canu_pacbio.contigs.fasta $SNIC_TMP
 
 # Move into the temporary directory
