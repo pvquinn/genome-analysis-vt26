@@ -1,0 +1,61 @@
+## load in datasets before proceeding ##
+
+## make a matrix with all datasets ##
+
+my_objects <- list(
+  ERR1797969.counts,
+  ERR1797970.counts,
+  ERR1797971.counts,
+  ERR1797972.counts,
+  ERR1797973.counts,
+  ERR1797974.counts
+)
+
+my_objects_fixed <- lapply(my_objects, function(x) {
+  df <- as.data.frame(x)
+  rownames(df) <- df$V1      
+  df["V2"]                   
+})
+
+
+counts <- do.call(cbind, my_objects_fixed)
+
+
+colnames(counts) <- c(
+  "ERR1797969",
+  "ERR1797970",
+  "ERR1797971",
+  "ERR1797972",
+  "ERR1797973",
+  "ERR1797974"
+)
+
+
+## create metadata table ##
+sample_info <- data.frame(
+  row.names = colnames(counts),
+  condition = c("serum", "serum", "serum", "BH", "BH", "BH")
+)
+
+## load in DESeq2 ##
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("DESeq2")
+
+library(DESeq2)
+
+## make dataset from matrix ##
+
+dds <- DESeqDataSetFromMatrix(
+  countData = counts,
+  colData   = sample_info,
+  design    = ~ condition
+)
+
+## run analysis ##
+dds <- DESeq(dds)
+
+## investigate results ##
+
+res <- results(dds)
